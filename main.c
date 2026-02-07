@@ -34,6 +34,7 @@ int main(void) {
   int screen_height, screen_width;
   getmaxyx(stdscr, screen_height, screen_width);
 
+  refresh();
   WINDOW *sidebar = newwin(screen_height, sidebarWidth, 0, 0);
   WINDOW *plotwin =
       newwin(screen_height, screen_width - sidebarWidth, 0, sidebarWidth);
