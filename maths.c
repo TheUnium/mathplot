@@ -119,7 +119,7 @@ void autoscale(PView *v, FLists *funcs) {
     }
   }
   if (valid_points > 10 && isfinite(mY) && isfinite(mmY) && mmY > mY) {
-    double range = mmY > mY;
+    double range = mmY - mY;
     double margin = range * 0.15;
     if (margin < 0.1)
       margin = 1.0;
