@@ -180,6 +180,26 @@ int main(void) {
       }
     } else if (mode == mCOMMAND) {
       switch (ch) {
+      case '\t': {
+        const CDef *m[cmdCount];
+        int m_count = g_cmd_matches(cmd_input, m, cmdCount);
+        if (m_count > 0) {
+          const char *comp = m[0]->c;
+          strncpy(cmd_input, comp, mmFormulaLen - 1);
+          cmd_input[mmFormulaLen - 1] = '\0';
+          cmd_pos = strlen(cmd_input);
+          if (strcmp(comp, "add") == 0 || strcmp(comp, "remove") == 0 ||
+              strcmp(comp, "select") == 0 || strcmp(comp, "w") == 0 ||
+              strcmp(comp, "wi") == 0) {
+            if (cmd_pos < mmFormulaLen - 1) {
+              cmd_input[cmd_pos++] = ' ';
+              cmd_input[cmd_pos] = '\0';
+            }
+          }
+          redraw = 1;
+        }
+        break;
+      }
       case '\n':
       case KEY_ENTER:
         if (strcmp(cmd_input, "q") == 0 || strcmp(cmd_input, "quit") == 0) {

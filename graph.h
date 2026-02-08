@@ -19,4 +19,7 @@ void d_help(WINDOW *win);
 void export_text(const char *f_name, char **buff, int h, int w);
 void export_png(const char *f_name, char **buff, int h, int w);
 
+int g_cmd_matches(const char *inp, const CDef **matches, int mm);
+const CDef *g_cmds(void);
+
 #endif // !PLOT_H

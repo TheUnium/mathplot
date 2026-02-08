@@ -7,6 +7,7 @@
 #define mmFormulaLen 256
 #define mmFuncs 10
 #define sidebarWidth 38
+#define cmdCount 9
 
 // H History
 // F Function
@@ -47,6 +48,12 @@ typedef struct {
   double mY, mmY;
   int autoScale;
 } PView;
+
+typedef struct {
+  const char *c;
+  const char *s;
+  const char *d;
+} CDef;
 
 typedef enum { mNORMAL, mINSERT, mCOMMAND, mTRACE, mINTEGRATE, mHELP } Mode;
 

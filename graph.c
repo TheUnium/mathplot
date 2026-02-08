@@ -10,6 +10,46 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const CDef cmds[cmdCount] = {
+    {"q", "q", "Quit mathplot"},
+    {"quit", "quit", "Quit mathplot"},
+    {"help", "help", "Show help"},
+    {"integrate", "integrate", "Integration mode"},
+    {"add", "add <expr>", "Add function #n"},
+    {"remove", "remove <n>", "Remove function #n"},
+    {"select", "select <n>", "Select function #n"},
+    {"w", "w <file>", "Export as ASCII text"},
+    {"wi", "wi <file>", "Export as PNG image"},
+};
+
+const CDef *g_cmds(void) { return cmds; }
+
+int g_cmd_matches(const char *inp, const CDef **matches, int mm) {
+  int c = 0;
+  int len = strlen(inp);
+
+  if (len == 0) {
+    for (int i = 0; i < cmdCount && c < mm; i++) {
+      matches[c++] = &cmds[i];
+    }
+    return c;
+  }
+
+  char c_part[64];
+  int c_len = 0;
+  for (int i = 0; i < len && inp[i] != ' ' && c_len < 63; i++) {
+    c_part[c_len++] = inp[i];
+  }
+  c_part[c_len] = '\0';
+
+  for (int i = 0; i < cmdCount && c < mm; i++) {
+    if (strncmp(cmds[i].c, c_part, c_len) == 0) {
+      matches[c++] = &cmds[i];
+    }
+  }
+  return c;
+}
+
 void export_text(const char *f_name, char **buff, int h, int w) {
   FILE *f = fopen(f_name, "w");
   if (!f)
@@ -159,9 +199,43 @@ void d_sidebar(WINDOW *win, FLists *funcs, PView *v, Mode mode,
 
   int input_Y = h - 4;
   if (mode == mCOMMAND) {
+    const CDef *matches[cmdCount];
+    int m_count = g_cmd_matches(cmd_input, matches, 6);
+    if (m_count > 0) {
+      int bs_Y = input_Y - m_count - 2;
+      if (bs_Y < 17)
+        bs_Y = 17;
+
+      wattron(win, COLOR_PAIR(7));
+      mvwprintw(win, bs_Y, 2, "Suggestions:");
+      wattron(win, COLOR_PAIR(7));
+
+      for (int i = 0; i < m_count && bs_Y + 1 + i < input_Y - 1; i++) {
+        if (i == 0) {
+          wattron(win, COLOR_PAIR(2) | A_BOLD);
+        } else {
+          wattron(win, COLOR_PAIR(7));
+        }
+
+        char s[32];
+        snprintf(s, sizeof(s), " %-12s %s", matches[i]->s, matches[i]->d);
+        mvwprintw(win, bs_Y + 1 + i, 2, "%-30s", s);
+
+        if (i == 0) {
+          wattron(win, COLOR_PAIR(2) | A_BOLD);
+        } else {
+          wattron(win, COLOR_PAIR(7));
+        }
+      }
+    }
+
     wattron(win, COLOR_PAIR(4) | A_BOLD);
     mvwprintw(win, input_Y, 2, ":%s_", cmd_input);
     wattroff(win, COLOR_PAIR(4) | A_BOLD);
+
+    wattron(win, COLOR_PAIR(8));
+    mvwprintw(win, input_Y + 1, 2, "TAB: complete ESC: cancel");
+    wattron(win, COLOR_PAIR(8));
   } else if (mode == mTRACE) {
     wattron(win, COLOR_PAIR(2) | A_BOLD);
     mvwprintw(win, input_Y - 1, 2, "-- TRACE --");
