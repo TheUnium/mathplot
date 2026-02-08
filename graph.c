@@ -208,7 +208,7 @@ void d_sidebar(WINDOW *win, FLists *funcs, PView *v, Mode mode,
 
       wattron(win, COLOR_PAIR(7));
       mvwprintw(win, bs_Y, 2, "Suggestions:");
-      wattron(win, COLOR_PAIR(7));
+      wattroff(win, COLOR_PAIR(7));
 
       for (int i = 0; i < m_count && bs_Y + 1 + i < input_Y - 1; i++) {
         if (i == 0) {
@@ -222,9 +222,9 @@ void d_sidebar(WINDOW *win, FLists *funcs, PView *v, Mode mode,
         mvwprintw(win, bs_Y + 1 + i, 2, "%-30s", s);
 
         if (i == 0) {
-          wattron(win, COLOR_PAIR(2) | A_BOLD);
+          wattroff(win, COLOR_PAIR(2) | A_BOLD);
         } else {
-          wattron(win, COLOR_PAIR(7));
+          wattroff(win, COLOR_PAIR(7));
         }
       }
     }
@@ -235,7 +235,7 @@ void d_sidebar(WINDOW *win, FLists *funcs, PView *v, Mode mode,
 
     wattron(win, COLOR_PAIR(8));
     mvwprintw(win, input_Y + 1, 2, "TAB: complete ESC: cancel");
-    wattron(win, COLOR_PAIR(8));
+    wattroff(win, COLOR_PAIR(8));
   } else if (mode == mTRACE) {
     wattron(win, COLOR_PAIR(2) | A_BOLD);
     mvwprintw(win, input_Y - 1, 2, "-- TRACE --");
