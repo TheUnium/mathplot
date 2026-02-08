@@ -155,16 +155,19 @@ static double parse_term(const char **p, double x) {
   double val = parse_factor(p, x);
   while (isspace(**p))
     (*p)++;
-  while (**p == '*' || **p == '/') {
+  while (**p == '*' || **p == '/' || isalnum(**p)) {
     char op = **p;
-    (*p)++;
-    if (op == '*')
+    if (op == '*') {
+      (*p)++;
       val *= parse_factor(p, x);
-    else {
+    } else if (op == '/') {
+      (*p)++;
       double divisor = parse_factor(p, x);
       if (fabs(divisor) < 1e-10)
         return NAN;
       val /= divisor;
+    } else {
+      val *= parse_factor(p, x);
     }
     while (isspace(**p))
       (*p)++;
