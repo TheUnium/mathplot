@@ -42,6 +42,11 @@ int g_cmd_matches(const char *inp, const CDef **matches, int mm) {
   }
   c_part[c_len] = '\0';
 
+  for (int i = 0; i < len; i++) {
+    if (inp[i] == ' ')
+      return 0;
+  }
+
   for (int i = 0; i < cmdCount && c < mm; i++) {
     if (strncmp(cmds[i].c, c_part, c_len) == 0) {
       matches[c++] = &cmds[i];
